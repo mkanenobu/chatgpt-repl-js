@@ -6,7 +6,7 @@
     "start": "node --experimental-strip-types --no-warnings=ExperimentalWarning ./main.ts",
     "fmt": "prettier --write .",
     "build": "node --experimental-strip-types --no-warnings=ExperimentalWarning ./scripts/build-single-js.ts",
-    "install": "npm run build && install out/chatgpt-repl.cjs ~/.local/bin"
+    "install-command": "npm run build && install out/chatgpt-repl.cjs ~/.local/bin"
   },
   "dependencies": {
     "openai": "^4.60.0",
