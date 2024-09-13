@@ -1,0 +1,23 @@
+{
+  "name": "chatgot-repl-js",
+  "module": "main.ts",
+  "type": "module",
+  "scripts": {
+    "start": "node --experimental-strip-types --no-warnings=ExperimentalWarning ./main.ts",
+    "fmt": "prettier --write .",
+    "build-js": "node --experimental-strip-types --no-warnings=ExperimentalWarning ./scripts/build-single-js.ts",
+    "build-binary": "bash ./scripts/build-executable.bash"
+  },
+  "dependencies": {
+    "openai": "^4.60.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.4",
+    "esbuild": "^0.23.1",
+    "prettier": "^3.3.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
