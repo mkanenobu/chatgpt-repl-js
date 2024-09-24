@@ -57,7 +57,6 @@ export const startRepl = async ({ config }: { config: Config }) => {
   const r = repl.start({
     prompt,
     eval: evaluator,
-    writer: () => "",
   });
 
   const commands = getCommands({ context, config });
