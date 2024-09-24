@@ -6,6 +6,45 @@ import { createSystemMessage } from "./message.ts";
 
 const prompt = "> ";
 
+const getCommands = ({
+  context,
+  config,
+}: {
+  context: REPLContext;
+  config: Config;
+}) => {
+  return {
+    clear: {
+      action() {
+        context.messages = [];
+        console.log("History cleared");
+        this.displayPrompt();
+      },
+      help: "Clears the chat history",
+    },
+    messages: {
+      action() {
+        console.log(
+          JSON.stringify(
+            [context.systemMessage, ...context.messages].filter((m) => !!m),
+            undefined,
+            2,
+          ),
+        );
+        this.displayPrompt();
+      },
+      help: "Prints the chat history",
+    },
+    config: {
+      action() {
+        console.log(config);
+        this.displayPrompt();
+      },
+      help: "Prints the current configuration",
+    },
+  } as const satisfies Record<string, repl.REPLCommand>;
+};
+
 export const startRepl = async ({ config }: { config: Config }) => {
   const context: REPLContext = {
     messages: [],
@@ -15,42 +54,15 @@ export const startRepl = async ({ config }: { config: Config }) => {
   };
   const evaluator = createEvaluator(config, context);
 
-  const commands: Record<string, repl.REPLCommand> = {
-    clear: {
-      action() {
-        context.messages = [];
-        this.displayPrompt();
-      },
-      help: "Clears the chat history",
-    },
-    messages: {
-      action() {
-        console.log(
-          [
-            config.systemContext
-              ? createSystemMessage(config.systemContext)
-              : null,
-            ...context.messages,
-          ].filter((m) => !!m),
-        );
-        this.displayPrompt();
-      },
-      help: "Prints the chat history",
-    },
-    config: {
-      action() {
-        console.log(config);
-      },
-      help: "Prints the current configuration",
-    },
-  };
-
   const r = repl.start({
     prompt,
     eval: evaluator,
     writer: () => "",
   });
 
+  const commands = getCommands({ context, config });
+
+  // define commands
   Object.entries(commands).forEach(([name, cmd]) => {
     r.defineCommand(name, cmd);
   });
