@@ -37,10 +37,10 @@ const getCommands = ({
     },
     config: {
       action() {
-        console.log(config);
+        console.log(JSON.stringify(config, undefined, 2));
         this.displayPrompt();
       },
-      help: "Prints the current configuration",
+      help: "Prints current configuration",
     },
   } as const satisfies Record<string, repl.REPLCommand>;
 };

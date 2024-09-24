@@ -6,8 +6,8 @@ export const configSchema = z.object({
   apiKey: z.string(),
   systemContext: z.string().optional(),
   model: z.string().optional().default("gpt-4o-mini"),
-  temperature: z.coerce.number().optional().default(0.7),
-  topP: z.coerce.number().optional().default(1.0),
+  temperature: z.coerce.number().optional(),
+  topP: z.coerce.number().optional(),
 });
 
 export type Config = z.infer<typeof configSchema>;
