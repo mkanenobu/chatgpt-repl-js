@@ -22,6 +22,7 @@ export const createCompletionStream = async ({
   return client.chat.completions.create({
     model,
     messages,
+    store: true,
     stream: true,
   });
 };
