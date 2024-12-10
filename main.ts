@@ -3,7 +3,7 @@ import { loadConfig } from "./src/config.ts";
 
 const main = async () => {
   const config = await loadConfig();
-  startRepl({ config });
+  await startRepl({ config });
 };
 
 main();

@@ -3,6 +3,7 @@ import type { Config } from "./config.ts";
 import { createCompletionStream } from "./openai.ts";
 import type { REPLContext } from "./repl-context.ts";
 import { createAssistantMessage, createUserMessage } from "./message.ts";
+import { newSpinner } from "./spinner.ts";
 
 export const createEvaluator = (config: Config, ctx: REPLContext): REPLEval => {
   return async function (input, _replCtx, _file, cb) {
@@ -10,6 +11,8 @@ export const createEvaluator = (config: Config, ctx: REPLContext): REPLEval => {
     if (_input === "") {
       return;
     }
+
+    const spinner = newSpinner().start();
 
     ctx.messages.push(createUserMessage(_input));
 
@@ -23,6 +26,10 @@ export const createEvaluator = (config: Config, ctx: REPLContext): REPLEval => {
       let responseBuf = "";
       for await (const chunk of stream) {
         if (chunk.choices) {
+          if (spinner.isSpinning) {
+            spinner.stop();
+          }
+
           const chunkContent = chunk.choices[0]?.delta.content || "";
           responseBuf += chunkContent;
           process.stdout.write(chunkContent);
@@ -35,6 +42,10 @@ export const createEvaluator = (config: Config, ctx: REPLContext): REPLEval => {
       this.displayPrompt();
     } catch (error) {
       cb(error as Error, { input: _input });
+    } finally {
+      if (spinner.isSpinning) {
+        spinner.stop();
+      }
     }
   };
 };

@@ -1,6 +1,6 @@
 import type OpenAI from "openai";
 
 export type REPLContext = {
-  systemMessage: OpenAI.ChatCompletionSystemMessageParam | null;
+  systemMessage: OpenAI.ChatCompletionMessageParam | null;
   messages: Array<OpenAI.ChatCompletionMessageParam>;
 };

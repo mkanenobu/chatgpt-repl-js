@@ -2,9 +2,10 @@ import type OpenAI from "openai";
 
 export const createSystemMessage = (
   content: string,
-): OpenAI.ChatCompletionSystemMessageParam => {
+): OpenAI.ChatCompletionMessageParam => {
   return {
-    role: "system",
+    // Use `user` role instead of `system` role because o1-model does not supports `system` role
+    role: "user",
     content,
   };
 };
