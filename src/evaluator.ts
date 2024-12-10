@@ -6,10 +6,10 @@ import { createAssistantMessage, createUserMessage } from "./message.ts";
 import { newSpinner } from "./spinner.ts";
 
 export const createEvaluator = (config: Config, ctx: REPLContext): REPLEval => {
-  return async function (input, _replCtx, _file, cb) {
+  return async function (input, replCtx, file, cb) {
     const _input = input.trim();
     if (_input === "") {
-      return;
+      return this.displayPrompt();
     }
 
     const spinner = newSpinner().start();
@@ -26,9 +26,8 @@ export const createEvaluator = (config: Config, ctx: REPLContext): REPLEval => {
       let responseBuf = "";
       for await (const chunk of stream) {
         if (chunk.choices) {
-          if (spinner.isSpinning) {
-            spinner.stop();
-          }
+          // Stop spinner after first response
+          spinner.isSpinning && spinner.stop();
 
           const chunkContent = chunk.choices[0]?.delta.content || "";
           responseBuf += chunkContent;
@@ -39,13 +38,11 @@ export const createEvaluator = (config: Config, ctx: REPLContext): REPLEval => {
 
       ctx.messages.push(createAssistantMessage(responseBuf));
 
-      this.displayPrompt();
+      spinner.stop();
+      return this.displayPrompt();
     } catch (error) {
-      cb(error as Error, { input: _input });
-    } finally {
-      if (spinner.isSpinning) {
-        spinner.stop();
-      }
+      spinner.stop();
+      return cb(error as Error, { input: _input });
     }
   };
 };
