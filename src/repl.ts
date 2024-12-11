@@ -18,6 +18,7 @@ const getCommands = ({
       action() {
         context.messages = [];
         console.log("History cleared");
+
         this.displayPrompt();
       },
       help: "Clears the chat history",
@@ -31,6 +32,7 @@ const getCommands = ({
             2,
           ),
         );
+
         this.displayPrompt();
       },
       help: "Prints the chat history",
@@ -38,9 +40,19 @@ const getCommands = ({
     config: {
       action() {
         console.log(JSON.stringify(config, undefined, 2));
+
         this.displayPrompt();
       },
       help: "Prints current configuration",
+    },
+    "set-model": {
+      action(input) {
+        config.model = input.trim();
+        console.log(`Model set to ${config.model}`);
+
+        this.displayPrompt();
+      },
+      help: "Set the model",
     },
   } as const satisfies Record<string, repl.REPLCommand>;
 };
